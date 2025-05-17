@@ -1,0 +1,944 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="humanoidV3">
+    <link name="ankel1">
+        <inertial>
+            <origin xyz="-9.461717720427032e-10 4.96136727701213e-09 0.0008749975469610094" rpy="0.0 -0.0 0.0" />
+            <mass value="0.022345050000000005" />
+            <inertia ixx="2.6819762642970645e-05" iyy="7.873022330469055e-06" izz="3.468137968750205e-05" ixy="-4.531626267810507e-20" iyz="3.4304834363799164e-20" ixz="2.439454888092385e-19" />
+        </inertial>
+        <visual name="ankel1_visual">
+            <origin xyz="-0.032500000946172905 -0.009999995038632992 0.001749997546961022" rpy="-3.14159265358979 5.377642775528136e-16 -1.249000902703285e-15" />
+            <geometry>
+                <mesh filename="meshes/ankel1.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="ankel1_collision">
+            <origin xyz="-0.032500000946172905 -0.009999995038632992 0.001749997546961022" rpy="-3.14159265358979 5.377642775528136e-16 -1.249000902703285e-15" />
+            <geometry>
+                <mesh filename="meshes/ankel1.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="servo2">
+        <inertial>
+            <origin xyz="-0.009549969290340386 0.0023874896329909136 0.024964922230111902" rpy="0.0 -0.0 0.0" />
+            <mass value="0.05780123871717229" />
+            <inertia ixx="1.1637489216004143e-05" iyy="1.6355380589483745e-05" izz="1.062900549778705e-05" ixy="6.210436850530722e-08" iyz="-1.4284004757615333e-07" ixz="5.713601902397196e-07" />
+        </inertial>
+        <visual name="servo2_visual">
+            <origin xyz="-0.05000000094617322 0.016749997546961028 0.03599999503863297" rpy="1.570796326794898 -1.2490009027032847e-15 -7.597004622606031e-16" />
+            <geometry>
+                <mesh filename="meshes/servo2.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="servo2_collision">
+            <origin xyz="-0.05000000094617322 0.016749997546961028 0.03599999503863297" rpy="1.570796326794898 -1.2490009027032847e-15 -7.597004622606031e-16" />
+            <geometry>
+                <mesh filename="meshes/servo2.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="csmall1">
+        <inertial>
+            <origin xyz="-1.5367193295645622e-09 4.961356394606042e-09 0.01308869971781287" rpy="0.0 -0.0 0.0" />
+            <mass value="0.007517560189288541" />
+            <inertia ixx="4.996715608195708e-06" iyy="1.5854743173651417e-06" izz="3.897412167647621e-06" ixy="9.740878893424454e-21" iyz="1.718312212623755e-18" ixz="-2.3150765701175635e-14" />
+        </inertial>
+        <visual name="csmall1_visual">
+            <origin xyz="-0.05000000169123135 -0.011249995575074842 0.04999999780028083" rpy="-3.14159265358979 7.597004622605937e-16 8.544811812600063e-16" />
+            <geometry>
+                <mesh filename="meshes/csmall1.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="csmall1_collision">
+            <origin xyz="-0.05000000169123135 -0.011249995575074842 0.04999999780028083" rpy="-3.14159265358979 7.597004622605937e-16 8.544811812600063e-16" />
+            <geometry>
+                <mesh filename="meshes/csmall1.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="servo4">
+        <inertial>
+            <origin xyz="-0.0023874897820010156 -0.009549963382801056 0.024964925500249285" rpy="0.0 -0.0 0.0" />
+            <mass value="0.05780123871717229" />
+            <inertia ixx="1.6355380589484043e-05" iyy="1.1637489216002233e-05" izz="1.0629005497792444e-05" ixy="-6.210436850552067e-08" iyz="5.713601902393393e-07" ixz="1.4284004757442962e-07" />
+        </inertial>
+        <visual name="servo4_visual">
+            <origin xyz="-0.06574999769597271 -0.021999995038633022 -0.020000001691231437" rpy="-3.1415926535897922 -1.5707963267948957 0" />
+            <geometry>
+                <mesh filename="meshes/servo4.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="servo4_collision">
+            <origin xyz="-0.06574999769597271 -0.021999995038633022 -0.020000001691231437" rpy="-3.1415926535897922 -1.5707963267948957 0" />
+            <geometry>
+                <mesh filename="meshes/servo4.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="csmall2">
+        <inertial>
+            <origin xyz="-1.69123028470608e-09 4.370820039234502e-09 0.013088699866797686" rpy="0.0 -0.0 0.0" />
+            <mass value="0.0075175601892790555" />
+            <inertia ixx="1.585474317362072e-06" iyy="4.99671560818556e-06" izz="3.8974121676413834e-06" ixy="-6.098637220230962e-20" iyz="-2.3150744525351954e-14" ixz="3.3203691532368573e-19" />
+        </inertial>
+        <visual name="csmall2_visual">
+            <origin xyz="-0.044500001691231326 -0.021749996320132883 0.09899999794929225" rpy="-3.14159265358979 5.381282163586294e-16 6.743723879120538e-16" />
+            <geometry>
+                <mesh filename="meshes/csmall2.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="csmall2_collision">
+            <origin xyz="-0.044500001691231326 -0.021749996320132883 0.09899999794929225" rpy="-3.14159265358979 5.381282163586294e-16 6.743723879120538e-16" />
+            <geometry>
+                <mesh filename="meshes/csmall2.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="csmall3">
+        <inertial>
+            <origin xyz="-0.019911296948796123 -1.6029945593132311e-09 -0.024749998308769713" rpy="0.0 -0.0 0.0" />
+            <mass value="0.007517560189279032" />
+            <inertia ixx="3.897412167641505e-06" iyy="4.996715608185831e-06" izz="1.5854743173623431e-06" ixy="2.3151212087538838e-14" iyz="-1.1286714022163552e-19" ixz="5.827586677109586e-19" />
+        </inertial>
+        <visual name="csmall3_visual">
+            <origin xyz="-0.14699999937294758 0.021749999087958348 0.01975000169123126" rpy="3.843315077959761e-16 1.570796326794896 0" />
+            <geometry>
+                <mesh filename="meshes/csmall3.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="csmall3_collision">
+            <origin xyz="-0.14699999937294758 0.021749999087958348 0.01975000169123126" rpy="3.843315077959761e-16 1.570796326794896 0" />
+            <geometry>
+                <mesh filename="meshes/csmall3.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Comp1">
+        <inertial>
+            <origin xyz="-1.6912302314153748e-09 0.005234147832396925 0.007101233407796812" rpy="0.0 -0.0 0.0" />
+            <mass value="0.024635392744770463" />
+            <inertia ixx="1.4596525160551189e-06" iyy="6.18083552493949e-06" izz="6.812286694457469e-06" ixy="-2.591920818598159e-19" iyz="-3.0522348765194117e-07" ixz="1.3552527156068805e-18" />
+        </inertial>
+        <visual name="Comp1_visual">
+            <origin xyz="-0.04450000169123129 -0.011309445863593271 0.11331588646907101" rpy="-3.14159265358979 5.380875589313602e-16 6.743723879120537e-16" />
+            <geometry>
+                <mesh filename="meshes/Comp1.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Comp1_collision">
+            <origin xyz="-0.04450000169123129 -0.011309445863593271 0.11331588646907101" rpy="-3.14159265358979 5.380875589313602e-16 6.743723879120537e-16" />
+            <geometry>
+                <mesh filename="meshes/Comp1.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="servo6">
+        <inertial>
+            <origin xyz="-0.0015104733836477013 -0.05983643169479816 -0.011754290813264033" rpy="0.0 -0.0 0.0" />
+            <mass value="0.060699238717172255" />
+            <inertia ixx="1.4693730397509703e-05" iyy="1.2227175300403008e-05" izz="2.003750615806434e-05" ixy="-7.085129238241627e-07" iyz="-1.0846499523523942e-06" ixz="8.478544706999188e-08" />
+        </inertial>
+        <visual name="servo6_visual">
+            <origin xyz="-0.04655113169123128 -0.21663231911962777 -0.0319999978064584" rpy="-1.5707963267948963 -4.526234928508708e-16 7.603220966537246e-16" />
+            <geometry>
+                <mesh filename="meshes/servo6.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="servo6_collision">
+            <origin xyz="-0.04655113169123128 -0.21663231911962777 -0.0319999978064584" rpy="-1.5707963267948963 -4.526234928508708e-16 7.603220966537246e-16" />
+            <geometry>
+                <mesh filename="meshes/servo6.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="csmall4">
+        <inertial>
+            <origin xyz="1.567883245456869e-10 2.784089829788172e-09 0.013088703264342883" rpy="0.0 -0.0 0.0" />
+            <mass value="0.007517560189288577" />
+            <inertia ixx="1.5854743173693633e-06" iyy="4.996715608195264e-06" izz="3.897412167648366e-06" ixy="-3.6337713437209485e-19" iyz="2.3151907501588534e-14" ixz="3.5236570605778894e-18" />
+        </inertial>
+        <visual name="csmall4_visual">
+            <origin xyz="-0.04449999984320096 -0.01674999908795832 0.2590000016448406" rpy="-3.141592653589791 1.1047905339958533e-15 1.693231541867879e-16" />
+            <geometry>
+                <mesh filename="meshes/csmall4.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="csmall4_collision">
+            <origin xyz="-0.04449999984320096 -0.01674999908795832 0.2590000016448406" rpy="-3.141592653589791 1.1047905339958533e-15 1.693231541867879e-16" />
+            <geometry>
+                <mesh filename="meshes/csmall4.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="servo8">
+        <inertial>
+            <origin xyz="-0.009549969437659449 0.0023874942795725396 0.024964927348278692" rpy="-3.111507638930571e-61 -0.0 0.0" />
+            <mass value="0.05780123871717224" />
+            <inertia ixx="1.1637489216008413e-05" iyy="1.6355380589483555e-05" izz="1.062900549781429e-05" ixy="6.210436849868003e-08" iyz="-1.4284004757813285e-07" ixz="5.713601902277874e-07" />
+        </inertial>
+        <visual name="servo8_visual">
+            <origin xyz="-0.22725000189816044 -0.01650000036945822 -0.019999999843201086" rpy="-3.141592653589793 -1.5707963267948957 0" />
+            <geometry>
+                <mesh filename="meshes/servo8.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="servo8_collision">
+            <origin xyz="-0.22725000189816044 -0.01650000036945822 -0.019999999843201086" rpy="-3.141592653589793 -1.5707963267948957 0" />
+            <geometry>
+                <mesh filename="meshes/servo8.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="servo10">
+        <inertial>
+            <origin xyz="-0.00011250930548168726 -0.001035075747120674 0.02045003224409019" rpy="0.0 -0.0 0.0" />
+            <mass value="0.05780123871717229" />
+            <inertia ixx="1.6355380589490602e-05" iyy="1.0629005497799111e-05" izz="1.1637489216052323e-05" ixy="-1.42840047564726e-07" iyz="5.713601902358478e-07" ixz="6.210436852391484e-08" />
+        </inertial>
+        <visual name="servo10_visual">
+            <origin xyz="-0.28925000139152124 0.009999997061400472 0.0800000005882596" rpy="5.396196667540477e-17 1.5707963267948961 0" />
+            <geometry>
+                <mesh filename="meshes/servo10.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="servo10_collision">
+            <origin xyz="-0.28925000139152124 0.009999997061400472 0.0800000005882596" rpy="5.396196667540477e-17 1.5707963267948961 0" />
+            <geometry>
+                <mesh filename="meshes/servo10.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="csmall5">
+        <inertial>
+            <origin xyz="2.288826905783026e-12 -0.019911299220684738 -0.02474999706139995" rpy="0.0 -0.0 0.0" />
+            <mass value="0.0075175601892790815" />
+            <inertia ixx="4.996715608191794e-06" iyy="3.897412167641919e-06" izz="1.5854743173606897e-06" ixy="2.3148556639249196e-14" iyz="-1.2332799712022613e-18" ixz="-4.607859233063394e-19" />
+        </inertial>
+        <visual name="csmall5_visual">
+            <origin xyz="-0.050000000588259444 -0.29600000164484075 -0.036999998342900284" rpy="-1.5707963267948966 -1.6932315418679007e-16 5.639287017770173e-16" />
+            <geometry>
+                <mesh filename="meshes/csmall5.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="csmall5_collision">
+            <origin xyz="-0.050000000588259444 -0.29600000164484075 -0.036999998342900284" rpy="-1.5707963267948966 -1.6932315418679007e-16 5.639287017770173e-16" />
+            <geometry>
+                <mesh filename="meshes/csmall5.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="servo1">
+        <inertial>
+            <origin xyz="0.00954996842675211 0.002387489632990425 0.024964922230111944" rpy="0.0 -0.0 0.0" />
+            <mass value="0.05780123871717229" />
+            <inertia ixx="1.1637489216004808e-05" iyy="1.6355380589478784e-05" izz="1.0629005497783933e-05" ixy="-6.210436850055028e-08" iyz="-1.42840047578132e-07" ixz="-5.713601902387819e-07" />
+        </inertial>
+        <visual name="servo1_visual">
+            <origin xyz="-0.12499999991742096 0.016749997546960584 0.03599999503863318" rpy="1.5707963267948977 7.494005416219953e-16 -5.186823193170617e-16" />
+            <geometry>
+                <mesh filename="meshes/servo1.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="servo1_collision">
+            <origin xyz="-0.12499999991742096 0.016749997546960584 0.03599999503863318" rpy="1.5707963267948977 7.494005416219953e-16 -5.186823193170617e-16" />
+            <geometry>
+                <mesh filename="meshes/servo1.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="csmall6">
+        <inertial>
+            <origin xyz="6.73130955419765e-10 4.961367394695771e-09 0.013088699717787202" rpy="0.0 -0.0 0.0" />
+            <mass value="0.007517560189279023" />
+            <inertia ixx="4.9967156081858516e-06" iyy="1.5854743173605542e-06" izz="3.8974121676406414e-06" ixy="-1.0418505251227894e-19" iyz="2.6988587281890145e-19" ixz="2.315143655126986e-14" />
+        </inertial>
+        <visual name="csmall6_visual">
+            <origin xyz="-0.12499999917236283 -0.01124999557507488 0.04999999780028033" rpy="-3.14159265358979 5.186823193170611e-16 6.881682058952412e-16" />
+            <geometry>
+                <mesh filename="meshes/csmall6.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="csmall6_collision">
+            <origin xyz="-0.12499999917236283 -0.01124999557507488 0.04999999780028033" rpy="-3.14159265358979 5.186823193170611e-16 6.881682058952412e-16" />
+            <geometry>
+                <mesh filename="meshes/csmall6.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="servo3">
+        <inertial>
+            <origin xyz="-0.0023874897820005893 0.009549963382801044 0.024964926363837972" rpy="-3.111507638930571e-61 -0.0 0.0" />
+            <mass value="0.05780123871717229" />
+            <inertia ixx="1.6355380589482254e-05" iyy="1.163748921599898e-05" izz="1.0629005497793148e-05" ixy="6.210436850732739e-08" iyz="-5.713601902406183e-07" ixz="1.4284004758093483e-07" />
+        </inertial>
+        <visual name="servo3_visual">
+            <origin xyz="-0.06574999769597219 0.021999995038633036 0.15499999917236268" rpy="9.748951538649027e-16 1.5707963267948957 0" />
+            <geometry>
+                <mesh filename="meshes/servo3.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="servo3_collision">
+            <origin xyz="-0.06574999769597219 0.021999995038633036 0.15499999917236268" rpy="9.748951538649027e-16 1.5707963267948957 0" />
+            <geometry>
+                <mesh filename="meshes/servo3.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="csmall7">
+        <inertial>
+            <origin xyz="8.276412621910367e-10 4.370820017030042e-09 0.013088699866797367" rpy="0.0 -0.0 -1.9446922743316068e-62" />
+            <mass value="0.007517560189279044" />
+            <inertia ixx="1.5854743173623025e-06" iyy="4.9967156081853975e-06" izz="3.8974121676414e-06" ixy="-1.5924219408380846e-19" iyz="-2.315050227392904e-14" ixz="7.860465750519907e-19" />
+        </inertial>
+        <visual name="csmall7_visual">
+            <origin xyz="-0.13049999917236282 -0.02174999632013294 0.09899999794929203" rpy="-3.14159265358979 5.184509151921889e-16 6.881681988163351e-16" />
+            <geometry>
+                <mesh filename="meshes/csmall7.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="csmall7_collision">
+            <origin xyz="-0.13049999917236282 -0.02174999632013294 0.09899999794929203" rpy="-3.14159265358979 5.184509151921889e-16 6.881681988163351e-16" />
+            <geometry>
+                <mesh filename="meshes/csmall7.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="csmall8">
+        <inertial>
+            <origin xyz="-0.01991129694879586 1.6029945726359073e-09 -0.024749999172358966" rpy="0.0 -0.0 0.0" />
+            <mass value="0.0075175601892790555" />
+            <inertia ixx="3.897412167641455e-06" iyy="4.996715608185072e-06" izz="1.5854743173632105e-06" ixy="-2.3151452644895858e-14" iyz="-2.5622746654442585e-19" ixz="-1.0028870095490916e-18" />
+        </inertial>
+        <visual name="csmall8_visual">
+            <origin xyz="-0.14699999937294742 -0.021749999087958348 -0.15524999917236293" rpy="-3.1415926535897927 -1.5707963267948957 0" />
+            <geometry>
+                <mesh filename="meshes/csmall8.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="csmall8_collision">
+            <origin xyz="-0.14699999937294742 -0.021749999087958348 -0.15524999917236293" rpy="-3.1415926535897927 -1.5707963267948957 0" />
+            <geometry>
+                <mesh filename="meshes/csmall8.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Comp2">
+        <inertial>
+            <origin xyz="8.276412266639e-10 0.00523414783239692 0.007101233407796617" rpy="0.0 -0.0 0.0" />
+            <mass value="0.024635392744770463" />
+            <inertia ixx="1.459652516055932e-06" iyy="6.180835524938677e-06" izz="6.812286694457374e-06" ixy="-6.335806445462167e-19" iyz="-3.052234876511585e-07" ixz="2.6020852139652106e-18" />
+        </inertial>
+        <visual name="Comp2_visual">
+            <origin xyz="-0.13049999917236274 -0.011309445863593337 0.11331588646907091" rpy="-3.14159265358979 5.179233760628632e-16 6.881682916369652e-16" />
+            <geometry>
+                <mesh filename="meshes/Comp2.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Comp2_collision">
+            <origin xyz="-0.13049999917236274 -0.011309445863593337 0.11331588646907091" rpy="-3.14159265358979 5.179233760628632e-16 6.881682916369652e-16" />
+            <geometry>
+                <mesh filename="meshes/Comp2.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="servo5">
+        <inertial>
+            <origin xyz="0.0015104725200581549 -0.059836431694797944 -0.011754290813263993" rpy="0.0 -0.0 0.0" />
+            <mass value="0.06069923871717226" />
+            <inertia ixx="1.4693730397516208e-05" iyy="1.2227175300403821e-05" izz="2.0037506158063472e-05" ixy="7.085129238078997e-07" iyz="-1.0846499523542441e-06" ixz="-8.478544707324787e-08" />
+        </inertial>
+        <visual name="servo5_visual">
+            <origin xyz="-0.12844886917236284 -0.21663231911962755 -0.031999997806458465" rpy="-1.5707963267948963 -9.102129856341965e-16 2.9566188310420746e-16" />
+            <geometry>
+                <mesh filename="meshes/servo5.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="servo5_collision">
+            <origin xyz="-0.12844886917236284 -0.21663231911962755 -0.031999997806458465" rpy="-1.5707963267948963 -9.102129856341965e-16 2.9566188310420746e-16" />
+            <geometry>
+                <mesh filename="meshes/servo5.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="csmall9">
+        <inertial>
+            <origin xyz="-1.0203786793283598e-09 2.7840898431108486e-09 0.01308870326434267" rpy="0.0 -0.0 0.0" />
+            <mass value="0.007517560189288569" />
+            <inertia ixx="1.585474317370556e-06" iyy="4.996715608195264e-06" izz="3.897412167648773e-06" ixy="-4.573977915173222e-19" iyz="2.315214636487966e-14" ixz="4.87890977618477e-19" />
+        </inertial>
+        <visual name="csmall9_visual">
+            <origin xyz="-0.13050000102039325 -0.01674999908795846 0.2590000016448404" rpy="-3.141592653589791 7.356311740267849e-17 1.1322598404707778e-15" />
+            <geometry>
+                <mesh filename="meshes/csmall9.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="csmall9_collision">
+            <origin xyz="-0.13050000102039325 -0.01674999908795846 0.2590000016448404" rpy="-3.141592653589791 7.356311740267849e-17 1.1322598404707778e-15" />
+            <geometry>
+                <mesh filename="meshes/csmall9.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="servo7">
+        <inertial>
+            <origin xyz="-0.009549969437659235 -0.002387494279572555 0.0249649282118688" rpy="0.0 -0.0 0.0" />
+            <mass value="0.05780123871717224" />
+            <inertia ixx="1.1637489216009171e-05" iyy="1.635538058947835e-05" izz="1.0629005497829469e-05" ixy="-6.210436849687754e-08" iyz="1.4284004757289818e-07" ixz="5.713601902545672e-07" />
+        </inertial>
+        <visual name="servo7_visual">
+            <origin xyz="-0.22725000189816016 0.01650000036945829 0.15500000102039324" rpy="2.913555616707348e-16 1.5707963267948957 0" />
+            <geometry>
+                <mesh filename="meshes/servo7.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="servo7_collision">
+            <origin xyz="-0.22725000189816016 0.01650000036945829 0.15500000102039324" rpy="2.913555616707348e-16 1.5707963267948957 0" />
+            <geometry>
+                <mesh filename="meshes/servo7.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="servo9">
+        <inertial>
+            <origin xyz="-0.00011250930548154515 0.0010350757471206773 0.020450031380499303" rpy="0.0 -0.0 0.0" />
+            <mass value="0.05780123871717229" />
+            <inertia ixx="1.6355380589493638e-05" iyy="1.0629005497805183e-05" izz="1.1637489216057527e-05" ixy="1.4284004756350628e-07" iyz="-5.713601902438675e-07" ixz="6.210436848293199e-08" />
+        </inertial>
+        <visual name="servo9_visual">
+            <origin xyz="-0.2892500013915211 -0.009999997061400477 -0.09500000027533506" rpy="-3.141592653589793 -1.5707963267948961 0" />
+            <geometry>
+                <mesh filename="meshes/servo9.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="servo9_collision">
+            <origin xyz="-0.2892500013915211 -0.009999997061400477 -0.09500000027533506" rpy="-3.141592653589793 -1.5707963267948961 0" />
+            <geometry>
+                <mesh filename="meshes/servo9.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="csmall10">
+        <inertial>
+            <origin xyz="-8.658793859694924e-10 -0.019911299220659196 -0.024749997061411014" rpy="0.0 -0.0 0.0" />
+            <mass value="0.0075175601892885895" />
+            <inertia ixx="4.996715608200468e-06" iyy="3.897412167649098e-06" izz="1.585474317365677e-06" ixy="-2.3153625284405566e-14" iyz="1.7957098481791167e-19" ixz="-5.437951521372608e-19" />
+        </inertial>
+        <visual name="csmall10_visual">
+            <origin xyz="-0.12500000027533475 -0.2960000016448406 -0.03699999834290043" rpy="-1.5707963267948966 -1.1322598404707766e-15 3.1918911957972876e-16" />
+            <geometry>
+                <mesh filename="meshes/csmall10.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="csmall10_collision">
+            <origin xyz="-0.12500000027533475 -0.2960000016448406 -0.03699999834290043" rpy="-1.5707963267948966 -1.1322598404707766e-15 3.1918911957972876e-16" />
+            <geometry>
+                <mesh filename="meshes/csmall10.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Comp3">
+        <inertial>
+            <origin xyz="-4.3179550601735174e-10 -2.9385998701059182e-09 0.015000001062798916" rpy="0.0 -0.0 0.0" />
+            <mass value="0.108042" />
+            <inertia ixx="1.1704550000100553e-05" iyy="0.00011704550000007224" izz="0.00011254375000002573" ixy="8.863352760068999e-18" iyz="2.6020852139652106e-17" ixz="-4.466912950640278e-17" />
+        </inertial>
+        <visual name="Comp3_visual">
+            <origin xyz="-0.08790239353209325 0.0099999970614005 -0.30209760583691514" rpy="2.2608736511185493e-15 -4.419119116591466e-16 -1.4131517269391634e-16" />
+            <geometry>
+                <mesh filename="meshes/Comp3.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Comp3_collision">
+            <origin xyz="-0.08790239353209325 0.0099999970614005 -0.30209760583691514" rpy="2.2608736511185493e-15 -4.419119116591466e-16 -1.4131517269391634e-16" />
+            <geometry>
+                <mesh filename="meshes/Comp3.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="servo16">
+        <inertial>
+            <origin xyz="0.00011251085256934968 -0.01403507324031894 0.01954996940696873" rpy="0.0 -0.0 0.0" />
+            <mass value="0.05780123871717229" />
+            <inertia ixx="1.6355380589510443e-05" iyy="1.0629005497862429e-05" izz="1.163748921600821e-05" ixy="1.428400475704672e-07" iyz="-5.713601902667103e-07" ixz="6.2104368488868e-08" />
+        </inertial>
+        <visual name="servo16_visual">
+            <origin xyz="-0.02349999706140114 -0.032000000431797425 -0.33274999893721086" rpy="2.137274603454801e-15 -2.1928454806640475e-16 1.5707963267948963" />
+            <geometry>
+                <mesh filename="meshes/servo16.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="servo16_collision">
+            <origin xyz="-0.02349999706140114 -0.032000000431797425 -0.33274999893721086" rpy="2.137274603454801e-15 -2.1928454806640475e-16 1.5707963267948963" />
+            <geometry>
+                <mesh filename="meshes/servo16.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="csmall11">
+        <inertial>
+            <origin xyz="9.082894081302585e-10 -2.9385999633646523e-09 0.013088702453615587" rpy="0.0 -0.0 0.0" />
+            <mass value="0.007517560189279109" />
+            <inertia ixx="4.996715608185179e-06" iyy="1.5854743173598224e-06" izz="3.897412167649071e-06" ixy="1.968504569418994e-18" iyz="-6.686266327388633e-19" ixz="2.3154252088786534e-14" />
+        </inertial>
+        <visual name="csmall11_visual">
+            <origin xyz="-0.3430000000846009 0.012249998342900302 -0.00799999956820247" rpy="-6.963708098753698e-17 1.5707963267948961 0" />
+            <geometry>
+                <mesh filename="meshes/csmall11.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="csmall11_collision">
+            <origin xyz="-0.3430000000846009 0.012249998342900302 -0.00799999956820247" rpy="-6.963708098753698e-17 1.5707963267948961 0" />
+            <geometry>
+                <mesh filename="meshes/csmall11.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="servo14">
+        <inertial>
+            <origin xyz="0.002387491803241728 0.009549968026426683 0.024964924252879408" rpy="0.0 -0.0 0.0" />
+            <mass value="0.05780123871717229" />
+            <inertia ixx="1.6355380589513913e-05" iyy="1.1637489215998363e-05" izz="1.0629005497807785e-05" ixy="-6.210436848011307e-08" iyz="-5.71360190253727e-07" ixz="-1.4284004757099405e-07" />
+        </inertial>
+        <visual name="servo14_visual">
+            <origin xyz="0.04099999971721355 0.3427499996822689 0.035999997061400786" rpy="1.5707963267948968 4.24593642260526e-16 -9.68370416948488e-17" />
+            <geometry>
+                <mesh filename="meshes/servo14.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="servo14_collision">
+            <origin xyz="0.04099999971721355 0.3427499996822689 0.035999997061400786" rpy="1.5707963267948968 4.24593642260526e-16 -9.68370416948488e-17" />
+            <geometry>
+                <mesh filename="meshes/servo14.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="csmall12">
+        <inertial>
+            <origin xyz="-1.282780992539756e-10 2.9385889366295717e-09 0.013088701704100458" rpy="0.0 -0.0 0.0" />
+            <mass value="0.007517560189288622" />
+            <inertia ixx="4.996715608197974e-06" iyy="1.5854743173658939e-06" izz="3.8974121676471035e-06" ixy="-5.116079001415974e-19" iyz="3.1001405869507392e-18" ixz="-2.3148326246287543e-14" />
+        </inertial>
+        <visual name="csmall12_visual">
+            <origin xyz="0.038000000313260104 -0.012249998342900359 0.3119999999355884" rpy="-3.141592653589791 -1.9065229335036574e-16 4.245935893209665e-16" />
+            <geometry>
+                <mesh filename="meshes/csmall12.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="csmall12_collision">
+            <origin xyz="0.038000000313260104 -0.012249998342900359 0.3119999999355884" rpy="-3.141592653589791 -1.9065229335036574e-16 4.245935893209665e-16" />
+            <geometry>
+                <mesh filename="meshes/csmall12.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="servo12">
+        <inertial>
+            <origin xyz="0.0017542934690760426 0.010777957773832121 0.02501553111428815" rpy="0.0 -0.0 0.0" />
+            <mass value="0.06069923871717238" />
+            <inertia ixx="1.91501062452408e-05" iyy="1.2223332488588319e-05" izz="1.3810173296464369e-05" ixy="8.792585286684332e-07" iyz="-6.465962782899886e-07" ixz="-1.0404541106063979e-07" />
+        </inertial>
+        <visual name="servo12_visual">
+            <origin xyz="0.038000000462271574 0.27874999953325746 0.035999997061400786" rpy="1.5707963267948968 4.245937481396478e-16 1.90665422361047e-16" />
+            <geometry>
+                <mesh filename="meshes/servo12.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="servo12_collision">
+            <origin xyz="0.038000000462271574 0.27874999953325746 0.035999997061400786" rpy="1.5707963267948968 4.245937481396478e-16 1.90665422361047e-16" />
+            <geometry>
+                <mesh filename="meshes/servo12.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="servo15">
+        <inertial>
+            <origin xyz="0.00011251085256940297 0.014035072376727574 0.019549969406968657" rpy="0.0 -0.0 0.0" />
+            <mass value="0.05780123871717229" />
+            <inertia ixx="1.635538058953473e-05" iyy="1.0629005497871102e-05" izz="1.1637489216018496e-05" ixy="-1.4284004758230364e-07" iyz="5.713601902083802e-07" ixz="6.210436848591355e-08" />
+        </inertial>
+        <visual name="servo15_visual">
+            <origin xyz="-0.023499997061401122 -0.14300000043179723 -0.332749998937211" rpy="2.1368409225862123e-15 -6.635634932966433e-16 1.5707963267948963" />
+            <geometry>
+                <mesh filename="meshes/servo15.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="servo15_collision">
+            <origin xyz="-0.023499997061401122 -0.14300000043179723 -0.332749998937211" rpy="2.1368409225862123e-15 -6.635634932966433e-16 1.5707963267948963" />
+            <geometry>
+                <mesh filename="meshes/servo15.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="csmall14">
+        <inertial>
+            <origin xyz="9.082894081302585e-10 2.9386000321984795e-09 0.013088701590024527" rpy="0.0 -0.0 0.0" />
+            <mass value="0.007517560189279109" />
+            <inertia ixx="4.9967156081874575e-06" iyy="1.585474317365677e-06" izz="3.897412167651673e-06" ixy="-2.625802136488331e-18" iyz="-8.859964628279982e-19" ixz="2.314630691974129e-14" />
+        </inertial>
+        <visual name="csmall14_visual">
+            <origin xyz="-0.3430000000846005 -0.012249998342900255 -0.18300000043179676" rpy="3.141592653589793 -1.570796326794896 0" />
+            <geometry>
+                <mesh filename="meshes/csmall14.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="csmall14_collision">
+            <origin xyz="-0.3430000000846005 -0.012249998342900255 -0.18300000043179676" rpy="3.141592653589793 -1.570796326794896 0" />
+            <geometry>
+                <mesh filename="meshes/csmall14.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="csmall15">
+        <inertial>
+            <origin xyz="-7.353127173814755e-10 2.938599914514839e-09 0.013088701704075306" rpy="0.0 -0.0 0.0" />
+            <mass value="0.007517560189279135" />
+            <inertia ixx="4.996715608192228e-06" iyy="1.5854743173682791e-06" izz="3.89741216764365e-06" ixy="-7.707999820014133e-19" iyz="2.2632720350634905e-18" ixz="2.3154872116903924e-14" />
+        </inertial>
+        <visual name="csmall15_visual">
+            <origin xyz="-0.2130000011768542 -0.012249998342900272 0.31199999993558847" rpy="-3.141592653589791 9.879843118750987e-16 -1.9496732259834e-17" />
+            <geometry>
+                <mesh filename="meshes/csmall15.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="csmall15_collision">
+            <origin xyz="-0.2130000011768542 -0.012249998342900272 0.31199999993558847" rpy="-3.141592653589791 9.879843118750987e-16 -1.9496732259834e-17" />
+            <geometry>
+                <mesh filename="meshes/csmall15.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="servo11">
+        <inertial>
+            <origin xyz="-0.0017542943326666106 0.010777957773831694 0.02501553111428803" rpy="0.0 -0.0 0.0" />
+            <mass value="0.0606992387171724" />
+            <inertia ixx="1.9150106245258147e-05" iyy="1.2223332488606967e-05" izz="1.3810173296489522e-05" ixy="-8.792585286269625e-07" iyz="-6.465962782958162e-07" ixz="1.0404541106940658e-07" />
+        </inertial>
+        <visual name="servo11_visual">
+            <origin xyz="-0.2130000013258658 0.2787499995332573 0.035999997061400675" rpy="1.5707963267948968 -1.9495249952176156e-17 -9.879567833043127e-16" />
+            <geometry>
+                <mesh filename="meshes/servo11.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="servo11_collision">
+            <origin xyz="-0.2130000013258658 0.2787499995332573 0.035999997061400675" rpy="1.5707963267948968 -1.9495249952176156e-17 -9.879567833043127e-16" />
+            <geometry>
+                <mesh filename="meshes/servo11.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="ankel2">
+        <inertial>
+            <origin xyz="8.258373540570574e-11 4.961367250366777e-09 0.000874997546960512" rpy="0.0 -0.0 0.0" />
+            <mass value="0.022345050000000005" />
+            <inertia ixx="2.681976264297071e-05" iyy="7.873022330465314e-06" izz="3.4681379687499054e-05" ixy="-3.5405977195229754e-19" iyz="9.438064614781042e-19" ixz="1.938011383317839e-18" />
+        </inertial>
+        <visual name="ankel2_visual">
+            <origin xyz="-0.1424999999174212 -0.009999995038633162 0.0017499975469605867" rpy="-3.14159265358979 5.377642775528058e-16 7.494005416219955e-16" />
+            <geometry>
+                <mesh filename="meshes/ankel2.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="ankel2_collision">
+            <origin xyz="-0.1424999999174212 -0.009999995038633162 0.0017499975469605867" rpy="-3.14159265358979 5.377642775528058e-16 7.494005416219955e-16" />
+            <geometry>
+                <mesh filename="meshes/ankel2.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="base_link">
+        <inertial>
+            <origin xyz="0.0875000013038565 -0.000999999999999378 0.2943680743872461" rpy="0.0 0.0 0.0" />
+            <mass value="0.01755626878248209" />
+            <inertia ixx="1.5391454563775725e-06" iyy="1.599129393932213e-06" izz="1.2304018564033063e-06" ixy="1.2869836935983475e-18" iyz="3.465224774883378e-18" ixz="-6.403037897861071e-18" />
+        </inertial>
+        <visual name="base_link_visual">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="meshes/base_link.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="base_link_collision">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="meshes/base_link.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Comp4">
+        <inertial>
+            <origin xyz="-4.317956836530357e-10 -2.9385998767672562e-09 0.03000000106279927" rpy="0.0 -0.0 0.0" />
+            <mass value="0.039288000000000003" />
+            <inertia ixx="1.3095999999998033e-05" iyy="1.30959999999989e-05" izz="2.6191999999999427e-06" ixy="-6.7762635780344005e-21" iyz="-2.710505431213761e-20" ixz="4.336808689942018e-19" />
+        </inertial>
+        <visual name="Comp4_visual">
+            <origin xyz="-0.09858072699107068 -0.00871680000000031 -0.35762685" rpy="5.3961966675403674e-17 -7.888609052210118e-31 -1.4131517269391634e-16" />
+            <geometry>
+                <mesh filename="meshes/Comp4.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Comp4_collision">
+            <origin xyz="-0.09858072699107068 -0.00871680000000031 -0.35762685" rpy="5.3961966675403674e-17 -7.888609052210118e-31 -1.4131517269391634e-16" />
+            <geometry>
+                <mesh filename="meshes/Comp4.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="servo13">
+        <inertial>
+            <origin xyz="-0.0023874926668327134 0.009549968026426398 0.024964924252879314" rpy="0.0 -0.0 0.0" />
+            <mass value="0.05780123871717229" />
+            <inertia ixx="1.6355380589545138e-05" iyy="1.1637489216021531e-05" izz="1.0629005497839877e-05" ixy="6.210436853757578e-08" iyz="-5.713601902594732e-07" ixz="1.4284004758261535e-07" />
+        </inertial>
+        <visual name="servo13_visual">
+            <origin xyz="-0.21600000058080773 0.3427499996822688 0.0359999970614007" rpy="1.5707963267948968 -1.9496573441153905e-17 -7.860109996682104e-16" />
+            <geometry>
+                <mesh filename="meshes/servo13.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="servo13_collision">
+            <origin xyz="-0.21600000058080773 0.3427499996822688 0.0359999970614007" rpy="1.5707963267948968 -1.9496573441153905e-17 -7.860109996682104e-16" />
+            <geometry>
+                <mesh filename="meshes/servo13.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="servo17">
+        <inertial>
+            <origin xyz="0.0023874916542346017 -0.009549971282768816 0.024964928254279074" rpy="0.0 -0.0 0.0" />
+            <mass value="0.05780123871717229" />
+            <inertia ixx="1.635538058950871e-05" iyy="1.163748921602717e-05" izz="1.062900549783966e-05" ixy="6.210436848575177e-08" iyz="5.713601902075772e-07" ixz="-1.4284004758299482e-07" />
+        </inertial>
+        <visual name="servo17_visual">
+            <origin xyz="0.025999999568204347 0.3427499970614109 0.18200000106280378" rpy="1.5707963267948968 1.5707963267948966 0" />
+            <geometry>
+                <mesh filename="meshes/servo17.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="servo17_collision">
+            <origin xyz="0.025999999568204347 0.3427499970614109 0.18200000106280378" rpy="1.5707963267948968 1.5707963267948966 0" />
+            <geometry>
+                <mesh filename="meshes/servo17.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="servo2_Rigid-85" type="fixed">
+        <origin xyz="-0.01 0.015 0.025999999999999995" rpy="-1.5707963267948966 1.2948285703496187e-32 5.107198190560144e-63" />
+        <parent link="servo2" />
+        <child link="ankel1" />
+    </joint>
+    <joint name="servo1_Rigid-86" type="fixed">
+        <origin xyz="0.01 0.015 0.025999999999999995" rpy="-1.5707963267948966 -1.0586267447530742e-31 0.0" />
+        <parent link="servo1" />
+        <child link="ankel2" />
+    </joint>
+    <joint name="servo2_val" type="revolute">
+        <origin xyz="0.0 0.024749999999999998 0.033" rpy="1.5707963267948966 3.212494263887367e-62 8.14464056369313e-32" />
+        <parent link="csmall1" />
+        <child link="servo2" />
+        <axis xyz="4.477502886857366e-32 0.0 1.0" />
+        <limit lower="-0.872665" upper="0.872665" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="servo1_val" type="revolute">
+        <origin xyz="0.0 0.024749999999999998 0.033" rpy="1.5707963267948966 -0.0 9.855476398043882e-32" />
+        <parent link="csmall6" />
+        <child link="servo1" />
+        <axis xyz="-8.598479941814529e-32 0.0 1.0" />
+        <limit lower="-0.872665" upper="0.872665" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="servo3_Rigid-89" type="fixed">
+        <origin xyz="-0.01500000000000001 0.01 0.026000000000000016" rpy="3.141592653589793 1.5707963267948966 0" />
+        <parent link="servo3" />
+        <child link="csmall6" />
+    </joint>
+    <joint name="servo4_Rigid-90" type="fixed">
+        <origin xyz="-0.01500000000000001 -0.01 0.025999999999999995" rpy="-2.1829489392438793e-62 -1.5707963267948966 0" />
+        <parent link="servo4" />
+        <child link="csmall1" />
+    </joint>
+    <joint name="servo4_val" type="revolute">
+        <origin xyz="-0.024749999999999998 0.0 0.03299999999999999" rpy="9.768100894714295e-35 1.5707963267948966 0" />
+        <parent link="csmall2" />
+        <child link="servo4" />
+        <axis xyz="0.0 6.604445422733482e-32 1.0" />
+        <limit lower="-1.570796" upper="1.570796" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="Comp1_Rigid-92" type="fixed">
+        <origin xyz="0.0 0.01046829 0.014202469999999998" rpy="0.0 -0.0 -1.6358743464059394e-31" />
+        <parent link="Comp1" />
+        <child link="csmall2" />
+    </joint>
+    <joint name="csmall3_Rigid-93" type="fixed">
+        <origin xyz="-0.03300000000000001 0.0 -0.024749999999999998" rpy="3.141592653589793 1.5707963267948966 0" />
+        <parent link="csmall3" />
+        <child link="Comp1" />
+    </joint>
+    <joint name="servo6_val" type="revolute">
+        <origin xyz="-0.026551130000000003 -0.07088232000000001 -0.01" rpy="-1.5707963267948966 -9.251285407522655e-62 1.5707963267948966" />
+        <parent link="servo6" />
+        <child link="csmall3" />
+        <axis xyz="-7.888609052210118e-31 -2.7629785492235695e-32 1.0" />
+        <limit lower="-1.570796" upper="1.570796" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="servo8_Rigid-95" type="fixed">
+        <origin xyz="-0.01 0.015 0.026000000000000002" rpy="-1.5707963267948966 -1.5707963267948966 0" />
+        <parent link="servo8" />
+        <child link="servo6" />
+    </joint>
+    <joint name="servo8_val" type="revolute">
+        <origin xyz="-0.02475 0.0 0.032999999999999974" rpy="2.5439795470746586e-32 1.5707963267948966 0" />
+        <parent link="csmall4" />
+        <child link="servo8" />
+        <axis xyz="7.888609052210118e-31 2.1008194424582792e-32 1.0" />
+        <limit lower="-1.570796" upper="1.570796" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="csmall5_Rigid-97" type="fixed">
+        <origin xyz="0.0 -0.03300000000000001 -0.02475" rpy="1.5707963267948966 -3.654358718453336e-32 -9.860761315262648e-32" />
+        <parent link="csmall5" />
+        <child link="csmall4" />
+    </joint>
+    <joint name="servo10_val" type="revolute">
+        <origin xyz="-0.0025 -0.026000000000000002 0.03" rpy="1.5707963267948966 1.5707963267948966 0" />
+        <parent link="servo10" />
+        <child link="csmall5" />
+        <axis xyz="-4.366914736371481e-33 0.0 1.0" />
+        <limit lower="-1.570796" upper="0.523599" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="base_link_Rigid-99" type="fixed">
+        <origin xyz="0.07700000173564747 -0.0009999970614001019 0.29436807577873964" rpy="1.4131517269391505e-16 -1.5707963267948921 0" />
+        <parent link="base_link" />
+        <child link="servo10" />
+    </joint>
+    <joint name="servo3_val" type="revolute">
+        <origin xyz="0.024750000000000015 0.0 0.03299999999999999" rpy="3.141592653589793 1.5707963267948966 0" />
+        <parent link="csmall7" />
+        <child link="servo3" />
+        <axis xyz="7.888609052210118e-31 -7.532811369950029e-32 1.0" />
+        <limit lower="-1.570796" upper="1.570796" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="Comp2_Rigid-101" type="fixed">
+        <origin xyz="0.0 0.01046829 0.014202469999999998" rpy="3.944304526105059e-31 -9.860761315262648e-32 -1.5531252759231369e-31" />
+        <parent link="Comp2" />
+        <child link="csmall7" />
+    </joint>
+    <joint name="csmall8_Rigid-102" type="fixed">
+        <origin xyz="-0.03300000000000001 0.0 -0.024750000000000015" rpy="-4.930380657631324e-32 -1.5707963267948966 0" />
+        <parent link="csmall8" />
+        <child link="Comp2" />
+    </joint>
+    <joint name="servo5_val" type="revolute">
+        <origin xyz="0.02655113000000002 -0.07088232000000001 -0.01" rpy="1.5707963267948966 -4.930380657631324e-32 1.5707963267948966" />
+        <parent link="servo5" />
+        <child link="csmall8" />
+        <axis xyz="0.0 -2.880058662007473e-31 1.0" />
+        <limit lower="-1.570796" upper="1.570796" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="servo7_Rigid-104" type="fixed">
+        <origin xyz="-0.01 -0.015 0.025999999999999995" rpy="1.5707963267948966 1.5707963267948966 0" />
+        <parent link="servo7" />
+        <child link="servo5" />
+    </joint>
+    <joint name="servo7_val" type="revolute">
+        <origin xyz="0.024749999999999998 0.0 0.032999999999999974" rpy="3.141592653589793 1.5707963267948966 0" />
+        <parent link="csmall9" />
+        <child link="servo7" />
+        <axis xyz="0.0 -1.257935617384854e-31 1.0" />
+        <limit lower="-1.570796" upper="1.570796" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="csmall10_Rigid-106" type="fixed">
+        <origin xyz="0.0 -0.03300000000000001 -0.02475" rpy="1.5707963267948966 4.954121711661801e-32 0.0" />
+        <parent link="csmall10" />
+        <child link="csmall9" />
+    </joint>
+    <joint name="servo9_val" type="revolute">
+        <origin xyz="-0.0025 0.026000000000000002 0.03" rpy="-1.5707963267948966 -1.5707963267948966 0" />
+        <parent link="servo9" />
+        <child link="csmall10" />
+        <axis xyz="-4.3669147363716016e-33 -0.0 1.0" />
+        <limit lower="-0.523599" upper="1.570796" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="base_link_Rigid-108" type="fixed">
+        <origin xyz="0.09800000173564674 -0.0009999970614000986 0.29436807577873964" rpy="-3.141592653589793 -1.5707963267948921 0" />
+        <parent link="base_link" />
+        <child link="servo9" />
+    </joint>
+    <joint name="base_link_Rigid-109" type="fixed">
+        <origin xyz="0.08750000173564716 -0.0009999970614000986 0.30713552577873926" rpy="-2.1459482208350834e-15 5.377642775528099e-16 1.4131517269391567e-16" />
+        <parent link="base_link" />
+        <child link="Comp3" />
+    </joint>
+    <joint name="servo11_val" type="revolute">
+        <origin xyz="0.0 0.02475 0.032999999999999974" rpy="1.5707963267948966 1.0385750690881077e-63 -2.633100619423229e-33" />
+        <parent link="csmall15" />
+        <child link="servo11" />
+        <axis xyz="-1.5066970818309316e-34 0.0 1.0" />
+        <limit lower="-1.570796" upper="1.570796" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="servo15_val" type="revolute">
+        <origin xyz="0.0025 0.03900000000000001 0.01" rpy="-1.5707963267948966 -1.5707963267948966 0" />
+        <parent link="servo15" />
+        <child link="csmall14" />
+        <axis xyz="0.0 4.608267028078227e-32 1.0" />
+        <limit lower="-2.792527" upper="0.349066" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="Comp3_Rigid-114" type="fixed">
+        <origin xyz="0.055 0.0 0.03" rpy="0.0 3.944304526105059e-31 -1.5707963267948966" />
+        <parent link="Comp3" />
+        <child link="servo15" />
+    </joint>
+    <joint name="servo12_val" type="revolute">
+        <origin xyz="0.0 0.02475 0.032999999999999974" rpy="1.5707963267948966 -1.232595164407831e-32 5.136873837722173e-32" />
+        <parent link="csmall12" />
+        <child link="servo12" />
+        <axis xyz="-3.6358066392837417e-32 0.0 1.0" />
+        <limit lower="-1.570796" upper="1.570796" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="servo14_Rigid-116" type="fixed">
+        <origin xyz="0.0025 0.03 0.026000000000000002" rpy="-1.5707963267948966 -2.175320663350183e-32 -1.232595164407831e-32" />
+        <parent link="servo14" />
+        <child link="csmall12" />
+    </joint>
+    <joint name="servo14_val" type="revolute">
+        <origin xyz="0.0 -0.02475 0.033" rpy="-1.5707963267948966 1.5707963267948966 0" />
+        <parent link="csmall11" />
+        <child link="servo14" />
+        <axis xyz="-6.742534649117511e-33 -1.232595164407831e-32 1.0" />
+        <limit lower="-0.349066" upper="2.792527" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="servo16_val" type="revolute">
+        <origin xyz="0.0025 -0.039 0.01" rpy="1.5707963267948966 -1.5707963267948966 0" />
+        <parent link="servo16" />
+        <child link="csmall11" />
+        <axis xyz="0.0 7.264215045608044e-33 1.0" />
+        <limit lower="-0.349066" upper="2.792527" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="Comp3_Rigid-119" type="fixed">
+        <origin xyz="-0.05499999999999999 0.0 0.03" rpy="0.0 3.944304526105059e-31 -1.5707963267948966" />
+        <parent link="Comp3" />
+        <child link="servo16" />
+    </joint>
+    <joint name="Comp3_Rigid-121" type="fixed">
+        <origin xyz="0.0 0.0 0.03" rpy="3.944304526105059e-31 -0.0 -2.9824285462269747e-32" />
+        <parent link="Comp3" />
+        <child link="Comp4" />
+    </joint>
+    <joint name="servo17_val" type="revolute">
+        <origin xyz="0.0 0.0 0.06" rpy="-3.944304526105059e-31 1.0041162257689498e-62 2.545737072589827e-32" />
+        <parent link="Comp4" />
+        <child link="servo17" />
+        <axis xyz="0.0 0.0 1.0" />
+        <limit lower="-1.570796" upper="1.570796" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="servo13_Rigid-123" type="fixed">
+        <origin xyz="-0.0025 0.03 0.026000000000000002" rpy="-1.5707963267948966 3.5141268180324735e-33 0.0" />
+        <parent link="servo13" />
+        <child link="csmall15" />
+    </joint>
+    <joint name="servo13_val" type="revolute">
+        <origin xyz="0.0 0.02475 0.03300000000000001" rpy="1.5707963267948966 -1.5707963267948966 0" />
+        <parent link="csmall14" />
+        <child link="servo13" />
+        <axis xyz="7.303564904261513e-34 -1.232595164407831e-32 1.0" />
+        <limit lower="-2.96706" upper="0.174533" effort="1000000" velocity="1000000" />
+    </joint>
+</robot>
