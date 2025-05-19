@@ -1,46 +1,82 @@
+import gym
+import numpy as np
+import torch
+import argparse
 from humanoid_env import HumanoidEnv
-import time
-import pybullet as p
+from train import PPO
+
+def check_model(model_path=None):
+    """
+    Test a trained model or run random actions if no model is provided.
+    """
+    # Create environment
+    env = HumanoidEnv(render=True)
+    observation_space = env.observation_space
+    action_space = env.action_space
+    
+    # Initialize agent
+    agent = PPO(
+        observation_space=observation_space,
+        action_space=action_space,
+        hidden_size=512,
+        lr=1e-4,
+        gamma=0.99,
+        gae_lambda=0.95,
+        clip_ratio=0.1,
+        target_kl=0.01,
+        update_epochs=10,
+        batch_size=128,
+        value_coef=0.5,
+        entropy_coef=0.01,
+        max_grad_norm=0.5,
+        use_gae=True,
+        normalize_advantage=True
+    )
+    
+    # Load model if provided
+    if model_path:
+        agent.load(model_path)
+        print(f"Testing trained model from: {model_path}")
+    else:
+        print("No model provided. Running with random actions.")
+    
+    try:
+        # Run episodes
+        for episode in range(5):  # Run 5 test episodes
+            observation = env.reset()
+            total_reward = 0
+            done = False
+            step = 0
+            
+            while not done and step < env.max_episode_steps:
+                # Get action
+                if model_path:
+                    action = agent.select_action(observation)
+                else:
+                    action = env.action_space.sample()
+                
+                # Take action
+                next_observation, reward, done, info = env.step(action)
+                total_reward += reward
+                
+                # Update observation
+                observation = next_observation
+                
+                # Render
+                env.render()
+                
+                step += 1
+            
+            print(f"Episode {episode} finished after {step} steps with reward {total_reward:.2f}")
+    
+    except KeyboardInterrupt:
+        print("Testing interrupted.")
+    finally:
+        env.close()
 
 if __name__ == "__main__":
-    env = HumanoidEnv(render=True)
-    obs = env.reset()  # Call reset to initialize the world
-
-    # 1. Check the state of the world after the first reset
-    print("Initial world state:")
-    print("Number of bodies:", p.getNumBodies())  # Check how many bodies are in the world
-    initial_body_ids = [p.getBodyInfo(i)[0] for i in range(p.getNumBodies())] #get the body ids
-    print("Body IDs:", initial_body_ids)
-
-    try:
-        for _ in range(1000):
-            action = env.action_space.sample()
-            obs, reward, done, _ = env.step(action)
-            if done:
-                print("Episode done, resetting...")
-                obs = env.reset() #call reset again, to check if the world is cleared.
-
-                # 2. Check the state of the world after the reset is called inside the loop.
-                print("\nWorld state after reset within the loop:")
-                print("Number of bodies:", p.getNumBodies())
-                current_body_ids = [p.getBodyInfo(i)[0] for i in range(p.getNumBodies())]
-                print("Body IDs:", current_body_ids)
-
-                if p.getNumBodies() == len(initial_body_ids):
-                    print("World reset correctly: Number of bodies is the same.")
-                else:
-                    print("World reset INCORRECTLY: Number of bodies changed!")
-
-                if set(initial_body_ids) == set(current_body_ids):
-                    print("World reset correctly: Body IDs are the same.")
-                else:
-                    print("World reset INCORRECTLY: Body IDs changed!")
-                break #remove the time.sleep and break here.
-
-    except KeyboardInterrupt:
-        print("Interrupted")
-
-    print("Holding simulation for inspection...")
-    time.sleep(20)  # So GUI stays open
-
-    env.close()
+    parser = argparse.ArgumentParser(description="Test a trained humanoid model")
+    parser.add_argument("--model", type=str, help="Path to the trained model file")
+    args = parser.parse_args()
+    
+    check_model(args.model)

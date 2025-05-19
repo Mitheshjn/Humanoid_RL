@@ -1,489 +1,351 @@
-import numpy as np
 import gym
 from gym import spaces
+import numpy as np
 import pybullet as p
 import pybullet_data
 import time
-import xml.etree.ElementTree as ET
+import os
 
 class HumanoidEnv(gym.Env):
-    """
-    A custom environment for a humanoid robot to learn to walk, based on PyBullet.
-    """
-
-    def __init__(self, render=False):
-        """
-        Initializes the HumanoidEnv.
-        """
-        self.render_mode = render  # Renamed to avoid conflict with render() method
-        self.physics_client_id = -1  # Initialize to an invalid ID
-        self.urdf_path = "./urdf/humanoidV3.urdf"  # Replace with the actual path to your URDF file!
-        self.humanoid = None
-        self.target = None  # Add a target for the robot to walk towards
-        self.initial_joint_angles = {}
-        self.observation_space = None
-        self.action_space = None
-        self.joints = []
-        self.joint_limits_lower = []
-        self.joint_limits_upper = []
-        self.joint_ranges = []
-        self.episode_time_step = 0
-        self.total_reward = 0  # Track cumulative reward
-        self.episode_count = 0  # Track the number of episodes
-        self.max_episode_steps = 1000  # Maximum steps per episode, adjust as needed.
-        self.walk_target_speed = 1.0  # Target walking speed
-        self.distance_weight = 0.1
-        self.alive_bonus = 5.0
-        self.control_cost_weight = 1e-4
-        self.healthy_reward = 1.0
-        self.termination_penalty = -100.0
-        self.fall_penalty = -50  # Add a fall penalty
-        self.stability_check_frequency = 10  # Check stability every 10 steps
-        self.max_base_height = 3.0  # Maximum height of the robot's base.
-        self.max_pitch_roll = 0.4  # Maximum pitch and roll angles in radians (about 23 degrees)
-        self.reset_joint_damping = 0.1  # Damping for joint reset
-        self.stabilize_duration = 200  # Increased stabilization duration
-        self.joint_name_mapping = {}
-        self.use_stabilization = True  # Add a flag to control stabilization
-        self.joint_index_mapping = {}  # store the mapping
-        self.mapped_joint_names = [] # Keep track of mapped joint names
-        self.plane_id = None # Store the plane ID
-        self.target_visual = None # Store the target visual ID
-
-        # Connect to PyBullet physics server
-        self._connect()
-
-        # Set up the simulation
-        self._setup_simulation()  
-        self._build_action_space()
-        self._build_observation_space()
-
-    def _connect(self):
-        """
-        Connects to the PyBullet physics server.
-        """
-        if self.render_mode:
-            self.physics_client_id = p.connect(
-                p.GUI
-            )  # Use GUI for visualization if needed.
-        else:
-            self.physics_client_id = p.connect(p.DIRECT)
-
-        if self.physics_client_id < 0:
-            raise Exception("Failed to connect to PyBullet physics server.")
-        p.setAdditionalSearchPath(
-            pybullet_data.getDataPath()
-        )  # Needed for plane.urdf and other data files
-
-    def _setup_simulation(self):
-        self.plane_id = p.loadURDF("plane.urdf")
-        p.setGravity(0, 0, -9.8) 
-        self._load_robot()  
-
-    def _load_robot(self):
-        """
-        Loads the humanoid robot from the URDF file into the simulation.
-        """
-        # Load the robot
-        self.humanoid = p.loadURDF(
-            self.urdf_path,
-            useFixedBase=False, # The base of the robot is not fixed
-            flags=p.URDF_USE_SELF_COLLISION, # Collision detection between different links of the same robot
-        )
-
-        if self.humanoid is None:
-            raise Exception("Failed to load the humanoid robot from the URDF file.")
-
-        # Initialize joint-related lists/dicts
-        self.joints = []
-        self.joint_index_mapping = {}
-        self.joint_limits_lower = []
-        self.joint_limits_upper = []
-        self.joint_ranges = []
-        self.initial_joint_angles = {}
-
-        num_joints = p.getNumJoints(self.humanoid) # Gets the total number of joints
+    def __init__(self, render=False, max_episode_steps=1000):
+        super(HumanoidEnv, self).__init__()
         
-        # Debug print all joints
-        print("\nPyBullet Joint Indices and Names:")
-        for i in range(num_joints):
-            joint_info = p.getJointInfo(self.humanoid, i)
-            joint_name = joint_info[1].decode("UTF-8") # Index 1: A byte string representing the name of the joint, thats why decode is used
-            print(f"Index {i}: {joint_name} (Type: {joint_info[2]})") # An Index 2: integer representing the type of the joint
-            """
-            Common types include:
-                p.JOINT_REVOLUTE (rotational joint with one degree of freedom)
-                p.JOINT_PRISMATIC (translational joint with one degree of freedom)
-                p.JOINT_FIXED (no relative motion between the connected links)
-                p.JOINT_SPHERICAL (rotational joint with three degrees of freedom)
-                p.JOINT_PLANAR (translational joint in a plane with two degrees of freedom and one rotational)
-            """
-
-        # Collect revolute joints and their indices, cuz its important for RL 
-        for i in range(num_joints):
-            joint_info = p.getJointInfo(self.humanoid, i)
-            joint_name = joint_info[1].decode("UTF-8")
+        # Connect to the physics server
+        self.render_mode = render
+        if render:
+            self.client = p.connect(p.GUI)
+        else:
+            self.client = p.connect(p.DIRECT)
+        
+        # Set up the simulation
+        p.setAdditionalSearchPath(pybullet_data.getDataPath())
+        p.setGravity(0, 0, -9.8)
+        
+        # Load the humanoid model
+        self.humanoid_id = None
+        
+        # Define action and observation spaces
+        # Action space: control signals for each joint
+        self.num_joints = 17  # Based on the URDF file
+        self.action_space = spaces.Box(low=-1.0, high=1.0, shape=(self.num_joints,), dtype=np.float32)
+        
+        # Observation space: joint positions, velocities, and robot state
+        # We'll observe joint positions, velocities, and the robot's orientation and position
+        obs_dim = self.num_joints * 2 + 6  # joint pos, vel + orientation(3) + position(3)
+        self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(obs_dim,), dtype=np.float32)
+        
+        # Joint indices mapping
+        self.joint_indices = {}
+        self.revolute_joints = []
+        
+        # Maximum episode steps
+        self.max_episode_steps = max_episode_steps
+        self.current_step = 0
+        
+        # Initial position and orientation
+        self.initial_pos = [0, 0, 0.02]  # Starting precisely on ground surface
+        self.initial_orn = p.getQuaternionFromEuler([0, 0, 0])
+        
+        # Load the plane
+        p.loadURDF("plane.urdf")
+        
+        # Observation normalization
+        self.obs_mean = None
+        self.obs_var = None
+        self.obs_count = 0
+        self.enable_obs_normalization = True
+        
+        # Reward normalization
+        self.reward_mean = 0
+        self.reward_var = 1
+        self.reward_count = 0
+        self.enable_reward_normalization = True
+        
+        # Initial joint positions (slightly bent knees and arms for better stability)
+        self.initial_joint_positions = {}
+        
+        # Initialize the environment
+        self.reset()
+    
+    def reset(self):
+        # Reset the simulation
+        p.resetSimulation()
+        p.setGravity(0, 0, -9.8)
+        p.loadURDF("plane.urdf")
+        
+        # Load the humanoid model
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        
+        # Try different possible paths for the URDF file
+        possible_paths = [
+            os.path.join(current_dir, "urdf/humanoidV3.urdf"),
+            os.path.join(current_dir, "urdf", "humanoidV3.urdf"),
+            os.path.join(current_dir, "urdf", "humanoid.urdf"),
+            os.path.join(current_dir, "humanoidV3.urdf")
+        ]
+        
+        model_path = None
+        for path in possible_paths:
+            if os.path.exists(path):
+                model_path = path
+                print(f"Found URDF at: {model_path}")
+                break
+        
+        if model_path is None:
+            raise FileNotFoundError("Could not find humanoid URDF file. Please ensure it exists in the correct location.")
+        
+        self.humanoid_id = p.loadURDF(
+            model_path,
+            basePosition=self.initial_pos,
+            baseOrientation=self.initial_orn,
+            useFixedBase=False,
+            flags=p.URDF_USE_SELF_COLLISION
+        )
+        
+        # Get joint information
+        self.num_joints = p.getNumJoints(self.humanoid_id)
+        print(f"\nTotal joints: {self.num_joints}")
+        
+        # Identify revolute joints (the ones we can control)
+        self.revolute_joints = []
+        self.joint_indices = {}
+        
+        for i in range(self.num_joints):
+            joint_info = p.getJointInfo(self.humanoid_id, i)
+            joint_name = joint_info[1].decode('utf-8')
             joint_type = joint_info[2]
             
+            print(f"Joint {i}: {joint_name} (Type: {joint_type})")
+            
             if joint_type == p.JOINT_REVOLUTE:
-                # Store direct joint name without mapping
-                self.joints.append(joint_name)
-                self.joint_index_mapping[joint_name] = i
-                
-                # Get joint limits
-                lower_limit = joint_info[8]
-                upper_limit = joint_info[9]
-                joint_range = upper_limit - lower_limit
-                
-                # Store joint properties
-                self.joint_limits_lower.append(lower_limit)
-                self.joint_limits_upper.append(upper_limit)
-                self.joint_ranges.append(joint_range)
-                self.initial_joint_angles[joint_name] = (lower_limit + upper_limit) / 2.0
-
-        if not self.joints:
-            raise Exception("No revolute joints found in the URDF. The robot may not be controllable.")
-
-        # Debug prints
-        print("\nRevolute Joints Found:")
-        print(self.joints)
-        print("\nJoint Index Mapping:")
-        print(self.joint_index_mapping)
-        print("\nJoint Limits (Lower/Upper):")
-        for name in self.joints:
-            idx = self.joints.index(name)
-            print(f"{name}: [{self.joint_limits_lower[idx]:.3f}, {self.joint_limits_upper[idx]:.3f}]")
-
-        # Store initial base position
-        self.initial_position = p.getBasePositionAndOrientation(self.humanoid)[0]
-
-    def _build_action_space(self):
-        """
-        Builds the action space for the environment.  This is a Gym spaces.Box.
-        """
-        # Number of controllable joints
-        num_actions = len(self.joints)
-        self.action_space = spaces.Box(
-            low=np.array(self.joint_limits_lower),
-            high=np.array(self.joint_limits_upper),
-            shape=(num_actions,),
-            dtype=np.float32,
-        )
-
-    def _build_observation_space(self):
-        """
-        Builds the observation space for the environment. This is a Gym spaces.Box.
-        """
-        # More comprehensive observation space, including:
-        # - Joint positions and velocities
-        # - Robot's base position and orientation
-        # - Target position
-        # - Velocity of the robot.
-        num_joints = len(self.joints)
-        observation_dim = (
-            num_joints * 2 + 6 + 3 + 3
-        )  # Joint positions, velocities, base pos/ori, target pos, base velocity
-        self.observation_space = spaces.Box(
-            low=-np.inf, high=np.inf, shape=(observation_dim,), dtype=np.float32
-        )
-
-    def reset(self):
-        """
-        Resets the environment to its initial state.
-        """
-        self.episode_time_step = 0
-        self.total_reward = 0
-        self.episode_count += 1
-
-        # Validate physics client connection
-        if not p.isConnected():
-            self._connect()  # Attempt to reconnect if disconnected
-            self._setup_simulation()
-
-        # Reset base first
-        p.resetBasePositionAndOrientation(
-            self.humanoid,
-            self.initial_position,
-            p.getQuaternionFromEuler([0, 0, 0])
-        )
+                self.revolute_joints.append(joint_name)
+                self.joint_indices[joint_name] = i
         
-        # Reset joint angles and velocities
-        for joint_name in self.joints:
-            if joint_name in self.initial_joint_angles:
-                initial_angle = self.initial_joint_angles[joint_name]
-                joint_index = self.joint_index_mapping.get(joint_name, -1)
-                
-                if joint_index == -1:
-                    print(f"Warning: Joint {joint_name} not found in joint_index_mapping. Skipping reset.")
-                    continue
-                    
-                p.resetJointState(self.humanoid, jointIndex=joint_index, targetValue=initial_angle, targetVelocity=0)
-
-        # Generate new target
-        self.target = [
-            np.random.uniform(-5, 5),
-            np.random.uniform(-5, 5),
-            0,
-        ]
-
-        # Update visualization
-        if self.render_mode:
-            if self.target_visual is not None:
-                p.removeBody(self.target_visual)
-            
-            visual_shape_id = p.createVisualShape(
-                shapeType=p.GEOM_SPHERE,
-                radius=0.2,
-                rgbaColor=[1, 0, 0, 1],
-            )
-            
-            self.target_visual = p.createMultiBody(
-                baseMass=0,
-                baseCollisionShapeIndex=-1,
-                baseVisualShapeIndex=visual_shape_id,
-                basePosition=self.target,
-            )
-
-        # Stabilization phase
-        if self.use_stabilization:
-            for _ in range(self.stabilize_duration):
-                p.stepSimulation()
-                if self.render_mode:
-                    time.sleep(1/240)  # Add small delay if using GUI
-
-        # After stabilization, apply joint control 
-        for joint_name in self.joints:
-            if joint_name in self.initial_joint_angles:
-                initial_angle = self.initial_joint_angles[joint_name]
-                joint_index = self.joint_index_mapping.get(joint_name, -1)
-                
-                if joint_index == -1:
-                    print(f"Warning: Joint {joint_name} not found in joint_index_mapping. Skipping motor control.")
-                    continue
-                    
-                # Apply position control with reasonable parameters
-                p.setJointMotorControl2(
-                    bodyIndex=self.humanoid,
-                    jointIndex=joint_index,
-                    controlMode=p.POSITION_CONTROL,
-                    targetPosition=initial_angle,
-                    positionGain=0.3,
-                    velocityGain=0.05,
-                    force=300
-                )
-
-        return self._get_observation()
-
-    def _get_observation(self):
-        """
-        Gets the current observation of the environment.
-
-        Returns:
-            numpy.ndarray: The observation array.
-        """
-        # Get base position and orientation
-        base_pos, base_ori = p.getBasePositionAndOrientation(self.humanoid)
-        base_linear_velocity, base_angular_velocity = p.getBaseVelocity(self.humanoid)
-
-        # Get joint positions and velocities
-        joint_indices = []
-        for joint_name in self.joints:
-            idx = self.joint_index_mapping.get(joint_name, -1)
-            if idx != -1:
-                joint_indices.append(idx)
-            else:
-                print(f"Warning: Joint {joint_name} not found in mapping during observation.")
-                # Append default values for missing joints to maintain array structure
-                joint_indices.append(0)  # This will be handled in the try-except below
+        print(f"\nRevolute Joints Found: {len(self.revolute_joints)}")
         
-        joint_positions = []
-        joint_velocities = []
+        # Initialize observation normalization if not already done
+        if self.obs_mean is None:
+            obs_dim = len(self.revolute_joints) * 2 + 6  # joint pos, vel + orientation(3) + position(3)
+            self.obs_mean = np.zeros(obs_dim)
+            self.obs_var = np.ones(obs_dim)
         
-        try:
-            if joint_indices:
-                joint_states = p.getJointStates(self.humanoid, joint_indices)
-                for i, state in enumerate(joint_states):
-                    if joint_indices[i] != 0:  # Skip placeholder indices
-                        joint_positions.append(state[0])
-                        joint_velocities.append(state[1])
-                    else:
-                        # Use default values for missing joints
-                        joint_positions.append(0.0)
-                        joint_velocities.append(0.0)
-            else:
-                # No valid joints found, use default values
-                joint_positions = [0.0] * len(self.joints)
-                joint_velocities = [0.0] * len(self.joints)
-        except Exception as e:
-            print(f"Error getting joint states: {e}")
-            # Use default values on error
-            joint_positions = [0.0] * len(self.joints)
-            joint_velocities = [0.0] * len(self.joints)
-
-        # Flatten the data
-        observation = np.concatenate(
-            [
-                base_pos,
-                base_ori[0:4],  # Quaternion orientation
-                joint_positions,
-                joint_velocities,
-                self.target,  # target position
-                base_linear_velocity,
-            ]
-        ).astype(np.float32)
-        return observation
-
-    def _apply_action(self, action):
-        """
-        Applies the given action to the humanoid robot.
-
-        Args:
-            action (numpy.ndarray): The action to apply.
-        """
-        # Clip the action to the joint limits
-        clipped_action = np.clip(
-            action, self.joint_limits_lower, self.joint_limits_upper
-        )
+        # Set initial joint positions for better stability
+        self._set_initial_joint_positions()
         
-        try:
-            for i, joint_name in enumerate(self.joints):
-                joint_index = self.joint_index_mapping.get(joint_name, -1)
-                if joint_index == -1:
-                    print(f"Warning: Joint {joint_name} not found in robot model. Skipping.")
-                    continue
-                    
-                p.setJointMotorControl2(
-                    bodyIndex=self.humanoid,
-                    jointIndex=joint_index,
-                    controlMode=p.POSITION_CONTROL,
-                    targetPosition=clipped_action[i],
-                )
-        except Exception as e:
-            print(f"Error applying action: {e}")
-
-    def step(self, action):
-        """
-        Performs one step in the simulation.
-
-        Args:
-            action (numpy.ndarray): The action to take.
-
-        Returns:
-            tuple: (observation, reward, done, info)
-        """
-        self._apply_action(action)
-        p.stepSimulation()
-        self.episode_time_step += 1
+        # Let the model settle briefly
+        for _ in range(5):
+            p.stepSimulation()
+        
+        # Reset step counter
+        self.current_step = 0
+        
+        # Return initial observation
         observation = self._get_observation()
-        reward, done = self._calculate_reward_and_done(observation)
-        self.total_reward += reward  # Accumulate reward.
-        info = {
-            "episode_reward": self.total_reward,
-            "episode_step": self.episode_time_step,
-        }
-        return observation, reward, done, info
-
-    def _calculate_reward_and_done(self, observation):
-        """
-        Calculates the reward and done signal.  This is where you define your reward function.
-
-        Args:
-            observation (numpy.ndarray): The current observation.
-
-        Returns:
-            tuple: (reward, done)
-        """
-        done = False
-        reward = 0
-
-        # Get base position and orientation
-        base_pos = observation[0:3]
-        base_ori = observation[3:7]
-        base_velocity = observation[-3:]
-
-        # Get joint states
-        joint_positions = observation[7 : 7 + len(self.joints)]
         
-        # Calculate forward progress reward
-        forward_progress = base_velocity[0]  # Velocity in the x-direction
-        reward += forward_progress
-
-        # Distance to target
-        dist_to_target = np.linalg.norm(np.array(base_pos) - np.array(self.target))
-        reward += self.distance_weight * -dist_to_target
-
-        # Penalize excessive joint movement (control cost)
-        control_cost = np.sum(
-            np.square(observation[7 + len(self.joints) : 7 + 2 * len(self.joints)])
-        )
-        reward -= self.control_cost_weight * control_cost
-
-        # Encourage the robot to stay alive
-        reward += self.alive_bonus
-
-        # Check if robot is healthy
-        if self.is_healthy(observation):
-            reward += self.healthy_reward
-        else:
+        # Update observation statistics for normalization
+        if self.enable_obs_normalization:
+            self._update_obs_stats(observation)
+            
+        return self._normalize_observation(observation) if self.enable_obs_normalization else observation
+    
+    def _set_initial_joint_positions(self):
+        """Set initial joint positions for better stability"""
+        # Initialize with slight bends in knees and arms
+        for joint_name in self.revolute_joints:
+            joint_index = self.joint_indices[joint_name]
+            joint_info = p.getJointInfo(self.humanoid_id, joint_index)
+            lower_limit = joint_info[8]
+            upper_limit = joint_info[9]
+            
+            # Set knee joints to slightly bent position
+            if 'servo6_val' in joint_name or 'servo5_val' in joint_name:
+                p.resetJointState(self.humanoid_id, joint_index, 0.2)
+            # Set ankle joints to slightly bent position
+            elif 'servo8_val' in joint_name or 'servo7_val' in joint_name:
+                p.resetJointState(self.humanoid_id, joint_index, 0.1)
+            # Set hip joints to slightly bent position
+            elif 'servo4_val' in joint_name or 'servo3_val' in joint_name:
+                p.resetJointState(self.humanoid_id, joint_index, 0.1)
+            # Set arm joints to slightly bent position
+            elif 'servo' in joint_name and ('13' in joint_name or '14' in joint_name or '15' in joint_name or '16' in joint_name):
+                p.resetJointState(self.humanoid_id, joint_index, 0.1)
+            else:
+                # Set other joints to middle position
+                mid_pos = (lower_limit + upper_limit) / 2
+                p.resetJointState(self.humanoid_id, joint_index, mid_pos)
+    
+    def step(self, action):
+        # Apply action to each joint
+        for i, joint_name in enumerate(self.revolute_joints):
+            if i >= len(action):
+                break  # Prevent index out of bounds
+                
+            joint_index = self.joint_indices[joint_name]
+            # Scale action from [-1, 1] to joint limits
+            joint_info = p.getJointInfo(self.humanoid_id, joint_index)
+            lower_limit = joint_info[8]
+            upper_limit = joint_info[9]
+            
+            # Scale the action to the joint limits
+            scaled_action = lower_limit + (action[i] + 1.0) * 0.5 * (upper_limit - lower_limit)
+            
+            # Apply position control
+            p.setJointMotorControl2(
+                self.humanoid_id,
+                joint_index,
+                p.POSITION_CONTROL,
+                targetPosition=scaled_action,
+                force=100.0
+            )
+        
+        # Step the simulation
+        p.stepSimulation()
+        
+        # Get new observation
+        observation = self._get_observation()
+        
+        # Update observation statistics for normalization
+        if self.enable_obs_normalization:
+            self._update_obs_stats(observation)
+        
+        # Calculate reward
+        reward = self._compute_reward()
+        
+        # Update reward statistics for normalization
+        if self.enable_reward_normalization:
+            self._update_reward_stats(reward)
+            reward = self._normalize_reward(reward)
+        
+        # Check if episode is done
+        done = self._is_done()
+        
+        # Increment step counter
+        self.current_step += 1
+        
+        # Check if max steps reached
+        if self.current_step >= self.max_episode_steps:
             done = True
-            reward += self.termination_penalty
-            reward += self.fall_penalty  # Add fall penalty
-
-        # Check for termination conditions (episode length)
-        if self.episode_time_step >= self.max_episode_steps:
-            done = True
-
-        return reward, done
-
-    def is_healthy(self, observation):
-        """
-        Check if the robot is in a healthy state (not fallen, within joint limits, etc.).
-
-        Args:
-            observation (numpy.ndarray): The current observation.
-
-        Returns:
-            bool: True if the robot is healthy, False otherwise.
-        """
-        base_pos = observation[0:3]
-        base_ori = observation[3:7]
-
-        # Example: Check if the robot is upright (using quaternion)
-        quat = base_ori
-        pitch = np.arcsin(2.0 * (quat[1] * quat[2] + quat[0] * quat[3]))
-        roll = np.arctan2(
-            2.0 * (quat[0] * quat[1] + quat[2] * quat[3]),
-            1.0 - 2.0 * (quat[1] * quat[1] + quat[2] * quat[2]),
-        )
-        if np.abs(pitch) > self.max_pitch_roll or np.abs(roll) > self.max_pitch_roll:
-            return False
-
-        # Check for joint limits
-        joint_positions = observation[7 : 7 + len(self.joints)]
-        for i, joint_position in enumerate(joint_positions):
-            if (
-                joint_position < self.joint_limits_lower[i]
-                or joint_position > self.joint_limits_upper[i]
-            ):
-                return False
-
-        # Additional stability check: base height
-        if base_pos[2] > self.max_base_height:
-            return False
-
-        return True
-
-    def render(self, mode="human"):
-        """
-        Renders the environment. This method is called automatically if the
-        render flag is set to True during initialization.
-        """
-        pass  # No need to do anything, the simulation runs with GUI if render is set to true.
-
+        
+        # Return step information
+        info = {}
+        return (self._normalize_observation(observation) if self.enable_obs_normalization else observation), reward, done, info
+    
+    def _get_observation(self):
+        # Get joint states
+        joint_states = []
+        for joint_name in self.revolute_joints:
+            joint_index = self.joint_indices[joint_name]
+            joint_state = p.getJointState(self.humanoid_id, joint_index)
+            joint_position = joint_state[0]
+            joint_velocity = joint_state[1]
+            joint_states.extend([joint_position, joint_velocity])
+        
+        # Get base position and orientation
+        pos, orn = p.getBasePositionAndOrientation(self.humanoid_id)
+        
+        # Convert quaternion to Euler angles
+        orn = p.getEulerFromQuaternion(orn)
+        
+        # Combine all observations
+        observation = np.array(joint_states + list(orn) + list(pos), dtype=np.float32)
+        
+        return observation
+    
+    def _update_obs_stats(self, observation):
+        """Update observation statistics for normalization"""
+        self.obs_count += 1
+        delta = observation - self.obs_mean
+        self.obs_mean += delta / self.obs_count
+        delta2 = observation - self.obs_mean
+        self.obs_var += delta * delta2
+    
+    def _normalize_observation(self, observation):
+        """Normalize observation using running statistics"""
+        if self.obs_count > 1:
+            var = self.obs_var / (self.obs_count - 1) if self.obs_count > 1 else np.ones_like(self.obs_var)
+            var = np.maximum(var, 1e-6)  # Avoid division by zero
+            return (observation - self.obs_mean) / np.sqrt(var)
+        return observation
+    
+    def _update_reward_stats(self, reward):
+        """Update reward statistics for normalization"""
+        self.reward_count += 1
+        delta = reward - self.reward_mean
+        self.reward_mean += delta / self.reward_count
+        delta2 = reward - self.reward_mean
+        self.reward_var += delta * delta2
+    
+    def _normalize_reward(self, reward):
+        """Normalize reward using running statistics"""
+        if self.reward_count > 1:
+            var = self.reward_var / (self.reward_count - 1) if self.reward_count > 1 else 1.0
+            var = max(var, 1e-6)  # Avoid division by zero
+            return (reward - self.reward_mean) / np.sqrt(var)
+        return reward
+    
+    def _compute_reward(self):
+        # Get base position and orientation
+        pos, orn = p.getBasePositionAndOrientation(self.humanoid_id)
+        
+        # Calculate height reward (encourage standing)
+        height = pos[2]
+        target_height = 0.5  # Target standing height
+        height_reward = 2.0 * (height - 0.02)  # Reward for standing up from initial position
+        
+        # Calculate orientation reward (encourage upright orientation)
+        orn_euler = p.getEulerFromQuaternion(orn)
+        upright_reward = 1.0 - abs(orn_euler[0]) - abs(orn_euler[1])  # Penalize tilting
+        
+        # Calculate velocity reward (encourage forward movement)
+        linear_vel, angular_vel = p.getBaseVelocity(self.humanoid_id)
+        forward_vel = linear_vel[0]  # X-axis velocity
+        velocity_reward = forward_vel  # Reward for moving forward
+        
+        # Calculate stability reward (encourage stable posture)
+        stability_reward = 0.5 * (1.0 - min(0.3, abs(linear_vel[1])) / 0.3)  # Penalize sideways movement
+        
+        # Calculate energy penalty (discourage excessive movements)
+        energy_penalty = 0
+        for joint_name in self.revolute_joints:
+            joint_index = self.joint_indices[joint_name]
+            joint_state = p.getJointState(self.humanoid_id, joint_index)
+            joint_velocity = joint_state[1]
+            energy_penalty += joint_velocity ** 2
+        energy_penalty *= 0.005  # Scale down the penalty
+        
+        # Calculate total reward
+        reward = 3.0 * height_reward + 2.0 * upright_reward + 1.5 * velocity_reward + stability_reward - energy_penalty
+        
+        # Add large penalty for falling
+        if height < 0.1:  # If the humanoid is too low (fallen)
+            reward -= 50
+        
+        return reward
+    
+    def _is_done(self):
+        # Get base position
+        pos, _ = p.getBasePositionAndOrientation(self.humanoid_id)
+        
+        # Check if the humanoid has fallen
+        if pos[2] < 0.1:  # If height is too low (adjusted for starting on ground)
+            return True
+        
+        return False
+    
+    def render(self, mode='human'):
+        if not self.render_mode:
+            print("Rendering is not enabled. Initialize the environment with render=True to enable rendering.")
+            return
+        
+        # Camera settings
+        base_pos, _ = p.getBasePositionAndOrientation(self.humanoid_id)
+        camera_distance = 3.0
+        camera_yaw = 0
+        camera_pitch = -30
+        p.resetDebugVisualizerCamera(camera_distance, camera_yaw, camera_pitch, base_pos)
+        
+        # Pause to allow visualization
+        time.sleep(0.01)
+    
     def close(self):
-        """
-        Closes the environment and disconnects from the physics server.
-        """
-        if self.physics_client_id >= 0:
-            p.disconnect(self.physics_client_id)
-            self.physics_client_id = -1
+        p.disconnect(self.client)
