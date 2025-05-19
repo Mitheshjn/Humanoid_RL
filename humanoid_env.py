@@ -14,9 +14,6 @@ class HumanoidEnv(gym.Env):
     def __init__(self, render=False):
         """
         Initializes the HumanoidEnv.
-
-        Args:
-            render (bool, optional): Whether to render the simulation. Defaults to False.
         """
         self.render_mode = render  # Renamed to avoid conflict with render() method
         self.physics_client_id = -1  # Initialize to an invalid ID
@@ -57,7 +54,7 @@ class HumanoidEnv(gym.Env):
         self._connect()
 
         # Set up the simulation
-        self._setup_simulation()  # call setup simulation instead of load robot.
+        self._setup_simulation()  
         self._build_action_space()
         self._build_observation_space()
 
@@ -79,14 +76,9 @@ class HumanoidEnv(gym.Env):
         )  # Needed for plane.urdf and other data files
 
     def _setup_simulation(self):
-        """
-        Sets up the simulation.  This includes loading the plane and setting gravity.
-        """
-        # Load the plane.  Important for stability of the robot.
         self.plane_id = p.loadURDF("plane.urdf")
-        # Set gravity.  Important for the robot to behave realistically.
-        p.setGravity(0, 0, -9.8)  # Earth gravity
-        self._load_robot()  # Load the robot after setting up the general simulation.
+        p.setGravity(0, 0, -9.8) 
+        self._load_robot()  
 
     def _load_robot(self):
         """
@@ -95,8 +87,8 @@ class HumanoidEnv(gym.Env):
         # Load the robot
         self.humanoid = p.loadURDF(
             self.urdf_path,
-            useFixedBase=False,
-            flags=p.URDF_USE_SELF_COLLISION,
+            useFixedBase=False, # The base of the robot is not fixed
+            flags=p.URDF_USE_SELF_COLLISION, # Collision detection between different links of the same robot
         )
 
         if self.humanoid is None:
@@ -110,17 +102,24 @@ class HumanoidEnv(gym.Env):
         self.joint_ranges = []
         self.initial_joint_angles = {}
 
-        # Get joint information
-        num_joints = p.getNumJoints(self.humanoid)
+        num_joints = p.getNumJoints(self.humanoid) # Gets the total number of joints
         
         # Debug print all joints
         print("\nPyBullet Joint Indices and Names:")
         for i in range(num_joints):
             joint_info = p.getJointInfo(self.humanoid, i)
-            joint_name = joint_info[1].decode("UTF-8")
-            print(f"Index {i}: {joint_name} (Type: {joint_info[2]})")
+            joint_name = joint_info[1].decode("UTF-8") # Index 1: A byte string representing the name of the joint, thats why decode is used
+            print(f"Index {i}: {joint_name} (Type: {joint_info[2]})") # An Index 2: integer representing the type of the joint
+            """
+            Common types include:
+                p.JOINT_REVOLUTE (rotational joint with one degree of freedom)
+                p.JOINT_PRISMATIC (translational joint with one degree of freedom)
+                p.JOINT_FIXED (no relative motion between the connected links)
+                p.JOINT_SPHERICAL (rotational joint with three degrees of freedom)
+                p.JOINT_PLANAR (translational joint in a plane with two degrees of freedom and one rotational)
+            """
 
-        # Collect revolute joints and their indices
+        # Collect revolute joints and their indices, cuz its important for RL 
         for i in range(num_joints):
             joint_info = p.getJointInfo(self.humanoid, i)
             joint_name = joint_info[1].decode("UTF-8")
