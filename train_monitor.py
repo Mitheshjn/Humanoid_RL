@@ -1,3 +1,4 @@
+# train_monitor.py
 import os
 import torch
 import numpy as np
@@ -174,7 +175,7 @@ def analyze_training_results(rewards, avg_rewards, lengths):
 if __name__ == "__main__":
     # Run training with monitoring
     print("Starting training with monitoring...")
-    rewards, avg_rewards, lengths = run_training_with_monitoring(num_episodes=100)
+    rewards, avg_rewards, lengths = run_training_with_monitoring(num_episodes=10000000)
     
     # Analyze results
     analyze_training_results(rewards, avg_rewards, lengths)
